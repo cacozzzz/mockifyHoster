@@ -3,10 +3,12 @@ package io.mockify.hoster.model;
 import java.util.List;
 
 public class Template {
-    int id;
-    String name;
-    String HTMLdata;
-    String contentTag;
+
+    private int id;
+    private String name;
+    private String HTMLdata;
+    private String contentTag;
+    private List<Resource> resourceList;
 
     public int getId() {
         return id;
@@ -48,6 +50,6 @@ public class Template {
         this.resourceList = resourceList;
     }
 
-    List<Resource> resourceList;
+
 
 }

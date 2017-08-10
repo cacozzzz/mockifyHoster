@@ -18,7 +18,7 @@ public class ProjectCompiler {
 
     public static void compile(Project project){
 
-        if (project != null & project.getTemplate() != null & project.getPostsList() != null) {
+        if (project != null && project.getTemplate() != null && project.getPostsList() != null) {
             Document doc = Jsoup.parse(project.getTemplate().getHTMLdata());
 
 
@@ -43,7 +43,7 @@ public class ProjectCompiler {
 
         if (file.exists()){
             // loading project
-            file = new File(projectDirectoryPath + File.separator + Constants.ProjectFilename);
+            file = new File(projectDirectoryPath + File.separator + Constants.PROJECT_FILENAME);
 
             if(file.exists()){
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -70,14 +70,14 @@ public class ProjectCompiler {
         String projectDirectoryPath = getProjectDirectoryPath(project);
         Template template;
 
-        if (project != null & (template = project.getTemplate()) != null){
+        if (project != null && (template = project.getTemplate()) != null){
 
             ObjectMapper objectMapper = new ObjectMapper();
 
             File file = new File(projectDirectoryPath);
             file.mkdirs();
 
-            file = new File(projectDirectoryPath + File.separator + Constants.TemplateFilename);
+            file = new File(projectDirectoryPath + File.separator + Constants.TEMPLATE_FILENAME);
             try {
 
                 file.createNewFile();
@@ -90,7 +90,7 @@ public class ProjectCompiler {
             List<Post> postList = project.getPostsList();
 
             if(postList != null){
-                file = new File(projectDirectoryPath + File.separator + Constants.PostListFilename);
+                file = new File(projectDirectoryPath + File.separator + Constants.POST_LIST_FILENAME);
 
                 try {
                     file.createNewFile();
@@ -120,7 +120,7 @@ public class ProjectCompiler {
             File file = new File(projectDirectoryPath);
             file.mkdirs();
 
-            file = new File(projectDirectoryPath + File.separator + Constants.ProjectFilename);
+            file = new File(projectDirectoryPath + File.separator + Constants.PROJECT_FILENAME);
             try {
 
                 file.createNewFile();
@@ -142,7 +142,7 @@ public class ProjectCompiler {
 
     public static String getProjectDirectoryPathByProjectName(String projectName){
         return System.getProperty("user.dir")
-                + Constants.ProjectsDirectory
+                + Constants.PROJECTS_DIRECTORY
                 + File.separator + projectName;
     }
 
@@ -153,7 +153,7 @@ public class ProjectCompiler {
 
     public static String getPageOutputDirectoryPath(Project project){
         return getProjectDirectoryPath(project)
-                + Constants.PageOutputDirectory;
+                + Constants.PAGE_OUTPUT_DIRECTORY;
     }
 
     private static void savePageToFIle(String html , Project project){
@@ -164,7 +164,7 @@ public class ProjectCompiler {
         File fileDirectories = new File(pageOutputDirectory);
         fileDirectories.mkdirs();
 
-        File file = new File( pageOutputDirectory + File.separator + Constants.PageFilename);
+        File file = new File( pageOutputDirectory + File.separator + Constants.PAGE_FILENAME);
 
         try {
             file.createNewFile();

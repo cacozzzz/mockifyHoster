@@ -2,6 +2,7 @@ package io.mockify.hoster.model;
 
 
 public class Resource {
+
     private int id;
     private String name;
     private String type;

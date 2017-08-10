@@ -1,6 +1,12 @@
 package io.mockify.hoster.model;
 
 public class Post {
+
+    private int id;
+    private String htmlData;
+    private String name;
+    private String url;
+
     public int getId() {
         return id;
     }
@@ -33,8 +39,5 @@ public class Post {
         this.url = url;
     }
 
-    int id;
-    String htmlData;
-    String name;
-    String url;
+
 }
