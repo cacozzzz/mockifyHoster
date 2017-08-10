@@ -3,6 +3,8 @@ package io.mockify.hoster;
 import io.mockify.hoster.model.Post;
 import io.mockify.hoster.model.Project;
 import io.mockify.hoster.model.Template;
+import io.mockify.hoster.model.dao.FileRepository;
+import io.mockify.hoster.model.dao.Repository;
 import org.junit.Test;
 
 public class ProjectCompilerTest {
@@ -25,7 +27,9 @@ public class ProjectCompilerTest {
         //template.setHTMLdata("<html><head></head><body><content-tag/></div></body></html>");
         //template.setName("template1");
 
-        Project  project = ProjectCompiler.loadProject("TestProject");
+        Repository repository = new FileRepository();
+
+        Project  project = repository.load("TestProject");
 
         ProjectCompiler.compile(project);
 
