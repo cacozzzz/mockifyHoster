@@ -1,11 +1,12 @@
 package io.mockify.hoster.model;
 
+import io.mockify.hoster.enums.ResourceType;
 
 public class Resource {
 
     private int id;
     private String name;
-    private String type;
+    private ResourceType type;
     private int size;
     private String url;
 
@@ -25,11 +26,11 @@ public class Resource {
         this.name = name;
     }
 
-    public String getType() {
+    public ResourceType getType() {
         return type;
     }
 
-    public void setType(String type) {
+    public void setType(ResourceType type) {
         this.type = type;
     }
 
