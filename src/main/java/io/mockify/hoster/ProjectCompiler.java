@@ -1,7 +1,6 @@
 package io.mockify.hoster;
 
 import io.mockify.hoster.model.Project;
-import io.mockify.hoster.model.dao.FileRepository;
 import io.mockify.hoster.model.dao.Repository;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
@@ -9,7 +8,13 @@ import org.jsoup.nodes.Element;
 
 public class ProjectCompiler {
 
-    public static void compile(Project project){
+    private Repository repository;
+
+    public ProjectCompiler(Repository repository) {
+        this.repository = repository;
+    }
+
+    public void compile(Project project){
 
         if (project != null && project.getTemplate() != null && project.getPostsList() != null) {
             Document doc = Jsoup.parse(project.getTemplate().getHTMLdata());
@@ -18,17 +23,13 @@ public class ProjectCompiler {
             final Element elementContent = doc.getElementsByTag(project.getTemplate().getContentTag()).first();
 
             project.getPostsList().forEach(post -> {
-
                 elementContent.append(post.getHtmlData());
             });
 
-            Repository repository = new FileRepository();
-            repository.savePageToFile(doc.html(), project);
+            repository.saveHtml(doc.html(), project);
         }
 
     }
-
-
 
 
 

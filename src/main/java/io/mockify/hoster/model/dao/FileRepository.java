@@ -64,23 +64,23 @@ public class FileRepository implements Repository {
     }
 
 
-    public String getProjectDirectoryPathByProjectName(String projectName){
+    private String getProjectDirectoryPathByProjectName(String projectName){
         return System.getProperty("user.dir")
                 + Constants.PROJECTS_DIRECTORY
                 + File.separator + projectName;
     }
 
-    public String getProjectDirectoryPath(Project project){
+    private String getProjectDirectoryPath(Project project){
         return getProjectDirectoryPathByProjectName(project.getName());
     }
 
-    public String getPageOutputDirectoryPath(Project project){
+    private String getPageOutputDirectoryPath(Project project){
         return getProjectDirectoryPath(project)
                 + Constants.PAGE_OUTPUT_DIRECTORY;
     }
 
     @Override
-    public void savePageToFile(String html , Project project){
+    public void saveHtml(String html , Project project){
 
         final String pageOutputDirectory = getPageOutputDirectoryPath(project);
 
