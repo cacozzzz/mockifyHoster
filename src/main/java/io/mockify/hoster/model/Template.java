@@ -50,6 +50,27 @@ public class Template {
         this.resourceList = resourceList;
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        Template template = (Template) o;
 
+        if (id != template.id) return false;
+        if (name != null ? !name.equals(template.name) : template.name != null) return false;
+        if (HTMLdata != null ? !HTMLdata.equals(template.HTMLdata) : template.HTMLdata != null) return false;
+        if (contentTag != null ? !contentTag.equals(template.contentTag) : template.contentTag != null) return false;
+        return resourceList != null ? resourceList.equals(template.resourceList) : template.resourceList == null;
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + (name != null ? name.hashCode() : 0);
+        result = 31 * result + (HTMLdata != null ? HTMLdata.hashCode() : 0);
+        result = 31 * result + (contentTag != null ? contentTag.hashCode() : 0);
+        result = 31 * result + (resourceList != null ? resourceList.hashCode() : 0);
+        return result;
+    }
 }

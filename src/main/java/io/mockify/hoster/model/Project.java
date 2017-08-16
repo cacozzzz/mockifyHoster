@@ -55,5 +55,25 @@ public class Project {
         this.postsList.add(post);
     }
 
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
 
+        Project project = (Project) o;
+
+        if (id != project.id) return false;
+        if (!name.equals(project.name)) return false;
+        if (!template.equals(project.template)) return false;
+        return postsList.equals(project.postsList);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = id;
+        result = 31 * result + name.hashCode();
+        result = 31 * result + template.hashCode();
+        result = 31 * result + postsList.hashCode();
+        return result;
+    }
 }

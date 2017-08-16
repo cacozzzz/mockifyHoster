@@ -9,6 +9,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 
 public class FileRepository implements Repository {
+
+    private String fileRepositoryBaseDir;
+
+    /**
+     * Main constructor
+     * @param fileRepositoryBaseDir Base dir where files are stored
+     */
+    public FileRepository(String fileRepositoryBaseDir) {
+        this.fileRepositoryBaseDir = fileRepositoryBaseDir;
+    }
+
     @Override
     public Project load(String projectName) {
         String projectDirectoryPath = getProjectDirectoryPathByProjectName(projectName);
@@ -65,7 +76,7 @@ public class FileRepository implements Repository {
 
 
     private String getProjectDirectoryPathByProjectName(String projectName){
-        return System.getProperty("user.dir")
+        return fileRepositoryBaseDir
                 + Constants.PROJECTS_DIRECTORY
                 + File.separator + projectName;
     }
