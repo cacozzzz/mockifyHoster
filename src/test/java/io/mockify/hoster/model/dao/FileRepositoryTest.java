@@ -3,6 +3,7 @@ package io.mockify.hoster.model.dao;
 import io.mockify.hoster.model.Post;
 import io.mockify.hoster.model.Project;
 import io.mockify.hoster.model.Template;
+import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
@@ -19,7 +20,7 @@ import static org.junit.Assert.*;
 public class FileRepositoryTest {
 
     @Rule
-    public TemporaryFolder temporaryFolder = new TemporaryFolder();
+    public final TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     String testProjectFileData = "{\"id\":0,\"name\":\"TestProject\",\"template\":{\"id\":0,\"name\":\"template1\",\"contentTag\":\"content-tag\",\"resourceList\":null,\"htmldata\":\"<html><head></head><body><content-tag/></div></body></html>\"},\"postsList\":[{\"id\":0,\"name\":\"Post1\",\"postDate\":null,\"htmlData\":\"<P>post1</P>\",\"url\":null}]}";
     String testProjectsDataFolder = "ProjectsData";
@@ -29,12 +30,15 @@ public class FileRepositoryTest {
 
     FileRepository fileRepository;
 
+    @Before
+    public void setUp(){
+        fileRepository = new FileRepository(getTempDirectory());
+    }
 
 
     @Test
     public void load() throws Exception {
 
-        fileRepository = new FileRepository(getTempDirectory());
 
         saveTestProject();
 
