@@ -42,8 +42,13 @@ public class FileRepository implements Repository {
                     e.printStackTrace();
                 }
 
+            } else {
+
+                System.err.println("Project file doesn't exist in "+projectDirectoryPath);
+                return null;
             }
         } else {
+            System.err.println("Project directory " + projectDirectoryPath + " doesn't exist.");
             return null;
         }
 
@@ -108,17 +113,8 @@ public class FileRepository implements Repository {
         }
 
 
-        FileWriter fileWriter;
-
-        try
-        {
-            fileWriter = new FileWriter(file);
-
+        try(FileWriter fileWriter = new FileWriter(file)) {
             fileWriter.write(html);
-
-            fileWriter.close();
-
-
         } catch (IOException e) {
             e.printStackTrace();
         }
