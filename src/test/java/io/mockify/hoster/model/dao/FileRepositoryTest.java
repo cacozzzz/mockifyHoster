@@ -120,9 +120,9 @@ public class FileRepositoryTest {
 
         //File projectFile = temporaryFolder.newFile(testProjectsDataFolder + "\\" + testProjectFolder + "\\" + testProjectFileName);
 
-        FileWriter fr = new FileWriter(projectFile);
-        fr.write(testProjectFileData);
-        fr.close();
+        try (FileWriter fr = new FileWriter(projectFile)) {
+            fr.write(testProjectFileData);
+        }
 
         System.out.println("");
 
