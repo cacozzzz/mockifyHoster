@@ -22,7 +22,7 @@ public class FileRepositoryTest {
     @Rule
     public final TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-    String testProjectFileData = "{\"id\":0,\"name\":\"TestProject\",\"template\":{\"id\":0,\"name\":\"template1\",\"contentTag\":\"content-tag\",\"resourceList\":null,\"htmldata\":\"<html><head></head><body><content-tag/></div></body></html>\"},\"postsList\":[{\"id\":0,\"name\":\"Post1\",\"postDate\":null,\"htmlData\":\"<P>post1</P>\",\"url\":null}]}";
+    String testProjectFileData;// = "{\"id\":0,\"name\":\"TestProject\",\"template\":{\"id\":0,\"name\":\"template1\",\"contentTag\":\"content-tag\",\"resourceList\":null,\"htmldata\":\"<html><head></head><body><content-tag/></div></body></html>\"},\"postsList\":[{\"id\":0,\"name\":\"Post1\",\"postDate\":null,\"htmlData\":\"<P>post1</P>\",\"url\":null}]}";
     String testProjectsDataFolder = "ProjectsData";
     String testProjectFolder = "TestProject";
     String testProjectFileName = "Project.json";
@@ -33,6 +33,21 @@ public class FileRepositoryTest {
     @Before
     public void setUp(){
         fileRepository = new FileRepository(getTempDirectory());
+
+        try {
+            byte[] bytes = Files.readAllBytes(Paths.get(
+                    System.getProperty("user.dir"),
+                    "src",
+                    "test",
+                    "resources",
+                    "TestProject.json"
+            ));
+
+            testProjectFileData = new String(bytes);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 
