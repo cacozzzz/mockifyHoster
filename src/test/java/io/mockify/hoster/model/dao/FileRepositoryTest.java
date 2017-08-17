@@ -26,6 +26,9 @@ public class FileRepositoryTest {
     String testProjectsDataFolder = "ProjectsData";
     String testProjectFolder = "TestProject";
     String testProjectFileName = "Project.json";
+    final String testProjectHtmlOutputFolder = "PageOutput";
+    final String testProjectHtmlFileName = "index.html";
+    String testProjectHtmlFileData;
 
 
     FileRepository fileRepository;
@@ -44,6 +47,21 @@ public class FileRepositoryTest {
             ));
 
             testProjectFileData = new String(bytes);
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            byte[] bytes = Files.readAllBytes(Paths.get(
+                    System.getProperty("user.dir"),
+                    "src",
+                    "test",
+                    "resources",
+                    "index.html"
+            ));
+
+            testProjectHtmlFileData = new String(bytes);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -82,6 +100,27 @@ public class FileRepositoryTest {
 
     }
 
+    @Test
+    public void saveHtml(){
+        final Project testProject = getTestProject();
+        fileRepository.saveHtml(testProjectHtmlFileData, testProject);
+
+        try{
+            byte[] bytes = Files.readAllBytes(Paths.get(
+                    getTempDirectory(),
+                    testProjectsDataFolder,
+                    testProjectFolder,
+                    testProjectHtmlOutputFolder,
+                    testProjectHtmlFileName
+            ));
+
+            assertEquals(testProjectHtmlFileData,
+                    new String(bytes));
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     private Project getTestProject(){
         Project project = new Project();
         project.setName("TestProject");
@@ -109,8 +148,6 @@ public class FileRepositoryTest {
     private void saveTestProject() throws IOException {
 
 
-        String testProjectHtmlOutputFolder = "PageOutput";
-        String testProjectHtmlFileName = "index.html";
 
         System.out.println(temporaryFolder.getRoot());
 
