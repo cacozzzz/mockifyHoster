@@ -53,10 +53,8 @@ public class FileRepositoryTest {
         fileRepository.save(testProject);
 
 
-        Path path = Paths.get(getTempDirectory()
-                + "\\" + testProjectsDataFolder
-                + "\\" + testProjectFolder
-                + "\\" + testProjectFileName);
+        Path path = Paths.get(getTempDirectory(),testProjectsDataFolder,testProjectFolder,testProjectFileName);
+
         byte[] bytes = Files.readAllBytes(path);
 
         assertEquals(
@@ -103,7 +101,9 @@ public class FileRepositoryTest {
 
         File projectDataFolder = temporaryFolder.newFolder(testProjectsDataFolder);
         File projectFolder = temporaryFolder.newFolder(testProjectsDataFolder, testProjectFolder);
-        File projectFile = temporaryFolder.newFile(testProjectsDataFolder + "\\" + testProjectFolder + "\\" + testProjectFileName);
+        File projectFile = temporaryFolder.newFile(testProjectsDataFolder + File.separator +  testProjectFolder + File.separator + testProjectFileName);
+
+        //File projectFile = temporaryFolder.newFile(testProjectsDataFolder + "\\" + testProjectFolder + "\\" + testProjectFileName);
 
         FileWriter fr = new FileWriter(projectFile);
         fr.write(testProjectFileData);
