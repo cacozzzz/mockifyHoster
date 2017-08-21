@@ -60,6 +60,14 @@ public class Project {
         this.resourceList = resourceList;
     }
 
+    public void setResource(Resource resource) {
+        resourceList.add(resource.getId(), resource);
+    }
+
+    public Resource getResource(int id) {
+        return resourceList.get(id);
+    }
+
     public void addPost(Post post){
         this.postsList.add(post);
     }
