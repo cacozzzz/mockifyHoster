@@ -15,8 +15,9 @@ public class Constants {
     public static final String TEMPLATE_FILENAME = "template.json";
     public static final String POST_LIST_FILENAME = "posts.json";
 
-
-
-
     public static final String ProjectsTestDirectory = PROJECTS_DIRECTORY + File.separator + "ProjectsTest";
+
+    /* Resource html tag attributes */
+    public static final String RESOURCE_HTML_ATTR_ID = "data-resource-id";
+    public static final String RESOURCE_HTML_ATTR_URL = "data-resource-url";
 }
