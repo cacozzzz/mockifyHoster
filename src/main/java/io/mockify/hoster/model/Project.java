@@ -1,7 +1,5 @@
 package io.mockify.hoster.model;
 
-import javafx.geometry.Pos;
-
 import java.util.ArrayList;
 import java.util.List;
 

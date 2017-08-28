@@ -1,7 +1,5 @@
 package io.mockify.hoster.model;
 
-import java.util.List;
-
 public class Template {
 
     private int id;
