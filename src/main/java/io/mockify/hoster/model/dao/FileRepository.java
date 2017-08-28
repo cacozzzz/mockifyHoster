@@ -25,11 +25,12 @@ public class FileRepository implements Repository {
         String projectDirectoryPath = getProjectDirectoryPathByProjectName(projectName);
         Project project;
 
+        // Check for directory existance
         File file = new File(projectDirectoryPath);
 
         if (file.exists()){
             // loading project
-            file = new File(projectDirectoryPath + File.separator + Constants.PROJECT_FILENAME);
+            file = new File(projectDirectoryPath, Constants.PROJECT_FILENAME);
 
             if(file.exists()){
                 ObjectMapper objectMapper = new ObjectMapper();
@@ -66,7 +67,7 @@ public class FileRepository implements Repository {
             File file = new File(projectDirectoryPath);
             file.mkdirs();
 
-            file = new File(projectDirectoryPath + File.separator + Constants.PROJECT_FILENAME);
+            file = new File(projectDirectoryPath, Constants.PROJECT_FILENAME);
             try {
 
                 file.createNewFile();
@@ -104,7 +105,7 @@ public class FileRepository implements Repository {
         File fileDirectories = new File(pageOutputDirectory);
         fileDirectories.mkdirs();
 
-        File file = new File( pageOutputDirectory + File.separator + Constants.PAGE_FILENAME);
+        File file = new File(pageOutputDirectory, Constants.PAGE_FILENAME);
 
         try {
             file.createNewFile();
