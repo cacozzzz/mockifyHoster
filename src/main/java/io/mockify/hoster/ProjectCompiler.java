@@ -17,8 +17,7 @@ public class ProjectCompiler {
         this.repository = repository;
     }
 
-    public void compile(Project project){
-
+    public String getCompiledHtml(Project project) {
         if (project != null && project.getTemplate() != null && project.getPostsList() != null) {
             Document doc = Jsoup.parse(project.getTemplate().getHTMLdata());
 
@@ -29,8 +28,16 @@ public class ProjectCompiler {
             });
 
             doc = fillWithResources(doc, project);
+            return doc.html();
+        }
+        return null;
+    }
 
-            repository.saveHtml(doc.html(), project);
+    public void compile(Project project){
+        String html = getCompiledHtml(project);
+
+        if (html != null) {
+            repository.saveHtml(html, project);
         }
     }
 
@@ -50,6 +57,4 @@ public class ProjectCompiler {
 
         return doc;
     }
-
-
 }
