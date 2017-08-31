@@ -1,14 +1,11 @@
 package io.mockify.hoster;
 
-import com.fasterxml.jackson.databind.JsonNode;
-import com.sun.javafx.runtime.SystemProperties;
 import io.mockify.hoster.enums.ResourceType;
 import io.mockify.hoster.model.Post;
 import io.mockify.hoster.model.Project;
 import io.mockify.hoster.model.Resource;
 import io.mockify.hoster.model.Template;
 import io.mockify.hoster.model.dao.Repository;
-import org.jsoup.Jsoup;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,9 +13,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 
-import static org.junit.Assert.fail;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.eq;
+import static org.junit.Assert.assertEquals;
 import static org.mockito.Mockito.*;
 
 public class ProjectCompilerTest {
@@ -45,6 +40,12 @@ public class ProjectCompilerTest {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Test
+    public void getCompiledHtml() {
+        Project project = getProject();
+        assertEquals(projectCompiler.getCompiledHtml(project), testHtmlFileData);
     }
 
     @Test
