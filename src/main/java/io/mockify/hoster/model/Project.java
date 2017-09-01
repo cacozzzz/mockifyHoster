@@ -50,6 +50,14 @@ public class Project {
         this.postsList = postsList;
     }
 
+    public Post getPost(int id) {
+        return postsList.get(id);
+    }
+
+    public void setPost(Post post) {
+        postsList.add(post.getId(), post);
+    }
+
     public List<Resource> getResourceList() {
         return resourceList;
     }
