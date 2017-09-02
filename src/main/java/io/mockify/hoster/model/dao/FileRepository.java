@@ -7,6 +7,7 @@ import io.mockify.hoster.model.Project;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 public class FileRepository implements Repository {
 
@@ -21,8 +22,8 @@ public class FileRepository implements Repository {
     }
 
     @Override
-    public Project load(String projectName) {
-        String projectDirectoryPath = getProjectDirectoryPathByProjectName(projectName);
+    public Project load(String projectName, String userId) {
+        String projectDirectoryPath = getProjectDirectoryPathByProjectName(projectName, userId);
         Project project;
 
         // Check for directory existance
@@ -57,8 +58,8 @@ public class FileRepository implements Repository {
     }
 
     @Override
-    public void save(Project project) {
-        String projectDirectoryPath = getProjectDirectoryPath(project);
+    public void save(Project project, String userId) {
+        String projectDirectoryPath = getProjectDirectoryPath(project, userId);
 
         if (project != null){
 
@@ -81,25 +82,10 @@ public class FileRepository implements Repository {
     }
 
 
-    private String getProjectDirectoryPathByProjectName(String projectName){
-        return fileRepositoryBaseDir
-                + Constants.PROJECTS_DIRECTORY
-                + File.separator + projectName;
-    }
-
-    private String getProjectDirectoryPath(Project project){
-        return getProjectDirectoryPathByProjectName(project.getName());
-    }
-
-    private String getPageOutputDirectoryPath(Project project){
-        return getProjectDirectoryPath(project)
-                + Constants.PAGE_OUTPUT_DIRECTORY;
-    }
-
     @Override
-    public void saveHtml(String html , Project project){
+    public void saveHtml(String html , Project project, String userId){
 
-        final String pageOutputDirectory = getPageOutputDirectoryPath(project);
+        final String pageOutputDirectory = getPageOutputDirectoryPath(project, userId);
 
 
         File fileDirectories = new File(pageOutputDirectory);
@@ -122,6 +108,25 @@ public class FileRepository implements Repository {
 
 
 
+    }
+
+    private String getProjectDirectoryPathByProjectName(String projectName, String userId){
+
+        return Paths.get(fileRepositoryBaseDir, Constants.PROJECTS_DIRECTORY, userId, projectName).toString();
+//        return fileRepositoryBaseDir
+//                + File.separator + userId
+//                + Constants.PROJECTS_DIRECTORY
+//                + File.separator + projectName;
+    }
+
+    private String getProjectDirectoryPath(Project project, String userId){
+        return getProjectDirectoryPathByProjectName(project.getName(), userId);
+    }
+
+    private String getPageOutputDirectoryPath(Project project, String userId){
+        return Paths.get(getProjectDirectoryPath(project, userId), Constants.PAGE_OUTPUT_DIRECTORY).toString();
+        /*return getProjectDirectoryPath(project, userId)
+                + Constants.PAGE_OUTPUT_DIRECTORY;*/
     }
 
 }

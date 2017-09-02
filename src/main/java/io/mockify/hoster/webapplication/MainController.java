@@ -23,16 +23,16 @@ public class MainController {
     }
 
 
-    @GetMapping("/{projectName}/preview")
+    @GetMapping("/{userId}/{projectName}/preview")
     public @ResponseBody
-    String getHtml(@PathVariable("projectName") String projectName) {
-        return projectCompiler.getCompiledHtml(repository.load(projectName));
+    String getHtml(@PathVariable("projectName") String projectName, @PathVariable("userId") String userId) {
+        return projectCompiler.getCompiledHtml(repository.load(projectName, userId));
     }
 
-    @GetMapping("/{projectName}")
+    @GetMapping("/{userId}/{projectName}")
     public @ResponseBody
-    Project getProject(@PathVariable("projectName") String projectName) {
-        return repository.load(projectName);
+    Project getProject(@PathVariable("projectName") String projectName, @PathVariable("userId") String userId) {
+        return repository.load(projectName, userId);
     }
 
 

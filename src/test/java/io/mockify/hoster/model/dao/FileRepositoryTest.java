@@ -3,39 +3,43 @@ package io.mockify.hoster.model.dao;
 import io.mockify.hoster.model.Post;
 import io.mockify.hoster.model.Project;
 import io.mockify.hoster.model.Template;
+import io.mockify.hoster.model.User;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
-
-import java.io.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class FileRepositoryTest {
 
     @Rule
     public final TemporaryFolder temporaryFolder = new TemporaryFolder();
 
-    String testProjectFileData;// = "{\"id\":0,\"name\":\"TestProject\",\"template\":{\"id\":0,\"name\":\"template1\",\"contentTag\":\"content-tag\",\"resourceList\":null,\"htmldata\":\"<html><head></head><body><content-tag/></div></body></html>\"},\"postsList\":[{\"id\":0,\"name\":\"Post1\",\"postDate\":null,\"htmlData\":\"<P>post1</P>\",\"url\":null}]}";
-    String testProjectsDataFolder = "ProjectsData";
-    String testProjectFolder = "TestProject";
-    String testProjectFileName = "Project.json";
-    final String testProjectHtmlOutputFolder = "PageOutput";
-    final String testProjectHtmlFileName = "index.html";
-    String testProjectHtmlFileData;
+    private String testProjectFileData;// = "{\"id\":0,\"name\":\"TestProject\",\"template\":{\"id\":0,\"name\":\"template1\",\"contentTag\":\"content-tag\",\"resourceList\":null,\"htmldata\":\"<html><head></head><body><content-tag/></div></body></html>\"},\"postsList\":[{\"id\":0,\"name\":\"Post1\",\"postDate\":null,\"htmlData\":\"<P>post1</P>\",\"url\":null}]}";
+    private String testProjectsDataFolder = "ProjectsData";
+    private String testProjectFolder = "TestProject";
+    private String testProjectFileName = "Project.json";
+    private final String testProjectHtmlOutputFolder = "PageOutput";
+    private final String testProjectHtmlFileName = "index.html";
+    private String testProjectHtmlFileData;
 
 
-    FileRepository fileRepository;
+    private FileRepository fileRepository;
+    private User user;
 
     @Before
     public void setUp(){
         fileRepository = new FileRepository(getTempDirectory());
+        user = getTestUser();
 
         try {
             byte[] bytes = Files.readAllBytes(Paths.get(
@@ -75,40 +79,43 @@ public class FileRepositoryTest {
 
         saveTestProject();
 
-        assertEquals(getTestProject(), fileRepository.load("TestProject"));
+        assertEquals(getTestProject(), fileRepository.load("TestProject", user.getId()));
     }
 
     @Test
-    public void save() throws IOException {
+    public void save() {
         fileRepository = new FileRepository(getTempDirectory());
         Project testProject = getTestProject();
 
-        fileRepository.save(testProject);
+        fileRepository.save(testProject, user.getId());
 
+        Path path = Paths.get(getTempDirectory(),testProjectsDataFolder,user.getId(),testProjectFolder,testProjectFileName);
 
-        Path path = Paths.get(getTempDirectory(),testProjectsDataFolder,testProjectFolder,testProjectFileName);
+        try {
+            byte[] bytes = Files.readAllBytes(path);
 
-        byte[] bytes = Files.readAllBytes(path);
-
-        assertEquals(
-                testProjectFileData,
-                new String(bytes)
-        );
-
-
-
-
+            assertEquals(
+                    testProjectFileData,
+                    new String(bytes)
+            );
+        } catch (IOException e) {
+            e.printStackTrace();
+            assertTrue(false);
+        }
     }
 
     @Test
     public void saveHtml(){
         final Project testProject = getTestProject();
-        fileRepository.saveHtml(testProjectHtmlFileData, testProject);
+        fileRepository.saveHtml(testProjectHtmlFileData, testProject, user.getId());
+
+        byte[] bytes;
 
         try{
-            byte[] bytes = Files.readAllBytes(Paths.get(
+            bytes = Files.readAllBytes(Paths.get(
                     getTempDirectory(),
                     testProjectsDataFolder,
+                    user.getId(),
                     testProjectFolder,
                     testProjectHtmlOutputFolder,
                     testProjectHtmlFileName
@@ -116,9 +123,10 @@ public class FileRepositoryTest {
 
             assertEquals(testProjectHtmlFileData,
                     new String(bytes));
-
         } catch (IOException e) {
             e.printStackTrace();
+
+            assertTrue(false);
         }
     }
     private Project getTestProject(){
@@ -151,18 +159,25 @@ public class FileRepositoryTest {
 
         System.out.println(temporaryFolder.getRoot());
 
-        File projectDataFolder = temporaryFolder.newFolder(testProjectsDataFolder);
-        File projectFolder = temporaryFolder.newFolder(testProjectsDataFolder, testProjectFolder);
-        File projectFile = temporaryFolder.newFile(testProjectsDataFolder + File.separator +  testProjectFolder + File.separator + testProjectFileName);
+        File testProjectFileFolder = Paths.get(temporaryFolder.getRoot().getCanonicalPath(), testProjectsDataFolder, user.getId(), testProjectFolder).toFile();
+        testProjectFileFolder.mkdirs();
 
-        //File projectFile = temporaryFolder.newFile(testProjectsDataFolder + "\\" + testProjectFolder + "\\" + testProjectFileName);
+        File testProjectFile = new File(testProjectFileFolder.toString(), testProjectFileName);
 
-        try (FileWriter fr = new FileWriter(projectFile)) {
+
+        try (FileWriter fr = new FileWriter(testProjectFile)) {
             fr.write(testProjectFileData);
         }
 
         System.out.println("");
 
+    }
+
+    private User getTestUser() {
+        User u = new User();
+        u.setId("test@test.com");
+        u.setNickName("Tester");
+        return u;
     }
 
     private String getTempDirectory(){

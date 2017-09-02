@@ -33,11 +33,11 @@ public class ProjectCompiler {
         return null;
     }
 
-    public void compile(Project project){
+    public void compile(Project project, String userId){
         String html = getCompiledHtml(project);
 
         if (html != null) {
-            repository.saveHtml(html, project);
+            repository.saveHtml(html, project, userId);
         }
     }
 

@@ -1,10 +1,7 @@
 package io.mockify.hoster;
 
 import io.mockify.hoster.enums.ResourceType;
-import io.mockify.hoster.model.Post;
-import io.mockify.hoster.model.Project;
-import io.mockify.hoster.model.Resource;
-import io.mockify.hoster.model.Template;
+import io.mockify.hoster.model.*;
 import io.mockify.hoster.model.dao.Repository;
 import org.junit.Before;
 import org.junit.Test;
@@ -21,9 +18,13 @@ public class ProjectCompilerTest {
     private Repository repository = mock(Repository.class);
     private ProjectCompiler projectCompiler = new ProjectCompiler(repository);
     private String testHtmlFileData;
+    private User user;
 
     @Before
-    public void setUp(){
+    public void setUp() {
+
+        user = getTestUser();
+
         try {
             byte[] bytes = Files.readAllBytes(
                     Paths.get(
@@ -52,9 +53,9 @@ public class ProjectCompilerTest {
     public void compile() throws Exception {
 
         Project project = getProject();
-        doNothing().when(repository).saveHtml(any(), any());
+        doNothing().when(repository).saveHtml(any(), any(), any());
 
-        projectCompiler.compile(project);
+        projectCompiler.compile(project, user.getId());
 
         //String expected = "<html><head></head><body><content-tag><P>post1</P></content-tag></div></body></html>";
         verify(repository, times(1)).saveHtml(
@@ -62,21 +63,22 @@ public class ProjectCompilerTest {
                         //Jsoup.parse(testHtmlFileData).html()
                         testHtmlFileData
                 ),
+                any(),
                 any());
     }
 
     @Test(expected = RuntimeException.class)
     public void compile_shouldFailBecauseOfException() throws Exception {
-        doThrow(new RuntimeException("expected exception")).when(repository).saveHtml(any(), any());
+        doThrow(new RuntimeException("expected exception")).when(repository).saveHtml(any(), any(), any());
 
-        projectCompiler.compile(getProject());
+        projectCompiler.compile(getProject(), user.getId());
     }
 
     @Test
     public void compile_notValidArgument() {
-        projectCompiler.compile(new Project());
+        projectCompiler.compile(new Project(), "");
 
-        verify(repository, never()).saveHtml(any(), any());
+        verify(repository, never()).saveHtml(any(), any(), any());
     }
 
     private Project getProject() {
@@ -116,4 +118,10 @@ public class ProjectCompilerTest {
         return project;
     }
 
+    private User getTestUser() {
+        User u = new User();
+        u.setId("test@test.com");
+        u.setNickName("Tester");
+        return u;
+    }
 }
