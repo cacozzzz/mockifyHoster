@@ -45,7 +45,6 @@ public class FileRepository implements Repository {
                 }
 
             } else {
-
                 System.err.println("Project file doesn't exist in "+projectDirectoryPath);
                 return null;
             }
@@ -84,11 +83,9 @@ public class FileRepository implements Repository {
 
     @Override
     public void saveHtml(String html , Project project, String userId){
-
         final String pageOutputDirectory = getPageOutputDirectoryPath(project, userId);
-
-
         File fileDirectories = new File(pageOutputDirectory);
+
         fileDirectories.mkdirs();
 
         File file = new File(pageOutputDirectory, Constants.PAGE_FILENAME);
@@ -99,24 +96,16 @@ public class FileRepository implements Repository {
             e.printStackTrace();
         }
 
-
         try(FileWriter fileWriter = new FileWriter(file)) {
             fileWriter.write(html);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-
-
     }
 
     private String getProjectDirectoryPathByProjectName(String projectName, String userId){
 
         return Paths.get(fileRepositoryBaseDir, Constants.PROJECTS_DIRECTORY, userId, projectName).toString();
-//        return fileRepositoryBaseDir
-//                + File.separator + userId
-//                + Constants.PROJECTS_DIRECTORY
-//                + File.separator + projectName;
     }
 
     private String getProjectDirectoryPath(Project project, String userId){
@@ -125,8 +114,6 @@ public class FileRepository implements Repository {
 
     private String getPageOutputDirectoryPath(Project project, String userId){
         return Paths.get(getProjectDirectoryPath(project, userId), Constants.PAGE_OUTPUT_DIRECTORY).toString();
-        /*return getProjectDirectoryPath(project, userId)
-                + Constants.PAGE_OUTPUT_DIRECTORY;*/
     }
 
 }
