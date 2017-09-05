@@ -1,4 +1,4 @@
-package io.mockify.hoster.model.dao;
+package io.mockify.hoster.dao;
 
 import io.mockify.hoster.model.Post;
 import io.mockify.hoster.model.Project;

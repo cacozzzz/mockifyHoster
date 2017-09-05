@@ -1,8 +1,10 @@
-package io.mockify.hoster.model.dao;
+package io.mockify.hoster.dao;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mockify.hoster.constants.Constants;
 import io.mockify.hoster.model.Project;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -10,6 +12,8 @@ import java.io.IOException;
 import java.nio.file.Paths;
 
 public class FileRepository implements Repository {
+
+    private static final Logger log = LoggerFactory.getLogger(FileRepository.class);
 
     private String fileRepositoryBaseDir;
 
@@ -41,11 +45,11 @@ public class FileRepository implements Repository {
 
                     return project;
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    log.error("Could not read project from json file", e);
                 }
 
             } else {
-                System.err.println("Project file doesn't exist in "+projectDirectoryPath);
+                log.error("Project file doesn't exist in {}", projectDirectoryPath);
                 return null;
             }
         } else {
@@ -103,17 +107,16 @@ public class FileRepository implements Repository {
         }
     }
 
-    private String getProjectDirectoryPathByProjectName(String projectName, String userId){
-
-        return Paths.get(fileRepositoryBaseDir, Constants.PROJECTS_DIRECTORY, userId, projectName).toString();
+    private String getPageOutputDirectoryPath(Project project, String userId){
+        return Paths.get(getProjectDirectoryPath(project, userId), Constants.PAGE_OUTPUT_DIRECTORY).toString();
     }
 
     private String getProjectDirectoryPath(Project project, String userId){
         return getProjectDirectoryPathByProjectName(project.getName(), userId);
     }
 
-    private String getPageOutputDirectoryPath(Project project, String userId){
-        return Paths.get(getProjectDirectoryPath(project, userId), Constants.PAGE_OUTPUT_DIRECTORY).toString();
+    private String getProjectDirectoryPathByProjectName(String projectName, String userId){
+        return Paths.get(fileRepositoryBaseDir, Constants.PROJECTS_DIRECTORY, userId, projectName).toString();
     }
 
 }
