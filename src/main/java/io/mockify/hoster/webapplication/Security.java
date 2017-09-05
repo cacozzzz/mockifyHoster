@@ -15,15 +15,20 @@ public class Security extends WebSecurityConfigurerAdapter {
     protected void configure(HttpSecurity http) throws Exception {
         super.configure(http);
 
-        http.authorizeRequests()
-                .antMatchers("/").permitAll();
+        http
+                .authorizeRequests()
+                    .antMatchers("/api").permitAll()
+                    .antMatchers("/api/**").authenticated()
+                    .and()
+                .logout()
+                    .logoutUrl("/logout")
+        ;
     }
 
     @Autowired
     public void configureGlobal(AuthenticationManagerBuilder authenticationManagerBuilder) throws Exception {
         authenticationManagerBuilder
                 .inMemoryAuthentication().withUser("test@test.com").password("password").roles("USER");
-
     }
 
     public String getUserId(){

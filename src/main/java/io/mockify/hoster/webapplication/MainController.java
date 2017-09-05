@@ -35,6 +35,11 @@ public class MainController {
         this.security = security;
     }
 
+    @GetMapping
+    public @ResponseBody String getHelloPage(){
+        return "<h1>Hello Page</h1>";
+    }
+
     @GetMapping("/{projectName}/preview")
     public @ResponseBody
     String getHtml(@PathVariable("projectName") String projectName) {
