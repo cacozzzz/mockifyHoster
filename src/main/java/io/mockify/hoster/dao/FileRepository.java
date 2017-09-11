@@ -1,14 +1,19 @@
-package io.mockify.hoster.model.dao;
+package io.mockify.hoster.dao;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mockify.hoster.constants.Constants;
 import io.mockify.hoster.model.Project;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Paths;
 
 public class FileRepository implements Repository {
+
+    private static final Logger log = LoggerFactory.getLogger(FileRepository.class);
 
     private String fileRepositoryBaseDir;
 
@@ -21,8 +26,8 @@ public class FileRepository implements Repository {
     }
 
     @Override
-    public Project load(String projectName) {
-        String projectDirectoryPath = getProjectDirectoryPathByProjectName(projectName);
+    public Project load(String projectName, String userId) {
+        String projectDirectoryPath = getProjectDirectoryPathByProjectName(projectName, userId);
         Project project;
 
         // Check for directory existance
@@ -40,12 +45,11 @@ public class FileRepository implements Repository {
 
                     return project;
                 } catch (IOException e) {
-                    e.printStackTrace();
+                    log.error("Could not read project from json file", e);
                 }
 
             } else {
-
-                System.err.println("Project file doesn't exist in "+projectDirectoryPath);
+                log.error("Project file doesn't exist in {}", projectDirectoryPath);
                 return null;
             }
         } else {
@@ -57,8 +61,8 @@ public class FileRepository implements Repository {
     }
 
     @Override
-    public void save(Project project) {
-        String projectDirectoryPath = getProjectDirectoryPath(project);
+    public void save(Project project, String userId) {
+        String projectDirectoryPath = getProjectDirectoryPath(project, userId);
 
         if (project != null){
 
@@ -81,28 +85,11 @@ public class FileRepository implements Repository {
     }
 
 
-    private String getProjectDirectoryPathByProjectName(String projectName){
-        return fileRepositoryBaseDir
-                + Constants.PROJECTS_DIRECTORY
-                + File.separator + projectName;
-    }
-
-    private String getProjectDirectoryPath(Project project){
-        return getProjectDirectoryPathByProjectName(project.getName());
-    }
-
-    private String getPageOutputDirectoryPath(Project project){
-        return getProjectDirectoryPath(project)
-                + Constants.PAGE_OUTPUT_DIRECTORY;
-    }
-
     @Override
-    public void saveHtml(String html , Project project){
-
-        final String pageOutputDirectory = getPageOutputDirectoryPath(project);
-
-
+    public void saveHtml(String html , Project project, String userId){
+        final String pageOutputDirectory = getPageOutputDirectoryPath(project, userId);
         File fileDirectories = new File(pageOutputDirectory);
+
         fileDirectories.mkdirs();
 
         File file = new File(pageOutputDirectory, Constants.PAGE_FILENAME);
@@ -113,15 +100,23 @@ public class FileRepository implements Repository {
             e.printStackTrace();
         }
 
-
         try(FileWriter fileWriter = new FileWriter(file)) {
             fileWriter.write(html);
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
 
+    private String getPageOutputDirectoryPath(Project project, String userId){
+        return Paths.get(getProjectDirectoryPath(project, userId), Constants.PAGE_OUTPUT_DIRECTORY).toString();
+    }
 
+    private String getProjectDirectoryPath(Project project, String userId){
+        return getProjectDirectoryPathByProjectName(project.getName(), userId);
+    }
 
+    private String getProjectDirectoryPathByProjectName(String projectName, String userId){
+        return Paths.get(fileRepositoryBaseDir, Constants.PROJECTS_DIRECTORY, userId, projectName).toString();
     }
 
 }

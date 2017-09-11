@@ -1,23 +1,17 @@
-package io.mockify.hoster;
+package io.mockify.hoster.usecase;
 
 import io.mockify.hoster.constants.Constants;
 import io.mockify.hoster.model.Project;
 import io.mockify.hoster.model.Resource;
-import io.mockify.hoster.model.dao.Repository;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class ProjectCompiler {
+public class ProjectCompilerUseCase implements UseCase<Project, String> {
 
-    private Repository repository;
-
-    public ProjectCompiler(Repository repository) {
-        this.repository = repository;
-    }
-
-    public String getCompiledHtml(Project project) {
+    @Override
+    public String execute(Project project) {
         if (project != null && project.getTemplate() != null && project.getPostsList() != null) {
             Document doc = Jsoup.parse(project.getTemplate().getHTMLdata());
 
@@ -31,14 +25,6 @@ public class ProjectCompiler {
             return doc.html();
         }
         return null;
-    }
-
-    public void compile(Project project){
-        String html = getCompiledHtml(project);
-
-        if (html != null) {
-            repository.saveHtml(html, project);
-        }
     }
 
     private Document fillWithResources(Document doc, Project project) {
