@@ -53,7 +53,7 @@ public class FileRepository implements Repository {
                 return null;
             }
         } else {
-            System.err.println("Project directory " + projectDirectoryPath + " doesn't exist.");
+            log.error("Project directory {} doesn't exist.", projectDirectoryPath);
             return null;
         }
 
@@ -78,7 +78,7 @@ public class FileRepository implements Repository {
                 objectMapper.writeValue(file, project);
 
             } catch (IOException e) {
-                e.printStackTrace();
+                log.error("Couldn't save project",e);
             }
 
         }
@@ -97,13 +97,13 @@ public class FileRepository implements Repository {
         try {
             file.createNewFile();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Couldn't create html file",e);
         }
 
         try(FileWriter fileWriter = new FileWriter(file)) {
             fileWriter.write(html);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Couldn't write html data into file while saving",e);
         }
     }
 
