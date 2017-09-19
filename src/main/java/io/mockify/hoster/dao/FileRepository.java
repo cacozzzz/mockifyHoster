@@ -62,28 +62,22 @@ public class FileRepository implements Repository {
 
     @Override
     public void save(Project project, String userId) {
+        if (project == null) throw new NullProjectException();
+
         String projectDirectoryPath = getProjectDirectoryPath(project, userId);
+        ObjectMapper objectMapper = new ObjectMapper();
+        File projectDirs = new File(projectDirectoryPath);
+        projectDirs.mkdirs();
+        File projectFile = new File(projectDirectoryPath, Constants.PROJECT_FILENAME);
 
-        if (project != null){
-
-            ObjectMapper objectMapper = new ObjectMapper();
-
-            File file = new File(projectDirectoryPath);
-            file.mkdirs();
-
-            file = new File(projectDirectoryPath, Constants.PROJECT_FILENAME);
-            try {
-
-                file.createNewFile();
-                objectMapper.writeValue(file, project);
-
-            } catch (IOException e) {
-                log.error("Couldn't save project",e);
-            }
+        try {
+            projectFile.createNewFile();
+            objectMapper.writeValue(projectFile, project);
+        } catch (IOException e) {
+            log.error("Couldn't save project",e);
 
         }
     }
-
 
     @Override
     public void saveHtml(String html , Project project, String userId){
@@ -118,5 +112,13 @@ public class FileRepository implements Repository {
     private String getProjectDirectoryPathByProjectName(String projectName, String userId){
         return Paths.get(fileRepositoryBaseDir, Constants.PROJECTS_DIRECTORY, userId, projectName).toString();
     }
+
+    class NullProjectException extends RuntimeException {
+        @Override
+        public String getMessage() {
+            return "Project object have to be not null!";
+        }
+    }
+
 
 }
