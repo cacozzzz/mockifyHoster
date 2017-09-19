@@ -1,13 +1,10 @@
 package io.mockify.hoster.webapplication;
 
+import io.mockify.hoster.dao.Repository;
+import io.mockify.hoster.model.Project;
 import io.mockify.hoster.usecase.LoadProjectUseCase;
 import io.mockify.hoster.usecase.ProjectCompilerUseCase;
-import io.mockify.hoster.model.Project;
-import io.mockify.hoster.dao.Repository;
 import io.mockify.hoster.usecase.UseCaseRequest;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -40,6 +37,23 @@ public class MainController {
         return "<h1>Hello Page</h1>";
     }
 
+    @GetMapping("/logoutPage")
+    public @ResponseBody String logout() {
+        return "<!DOCTYPE html>\n" +
+                "<html xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:th=\"http://www.thymeleaf.org\"\n" +
+                "      xmlns:sec=\"http://www.thymeleaf.org/thymeleaf-extras-springsecurity3\">\n" +
+                "    <head>\n" +
+                "        <title>Hello World!</title>\n" +
+                "    </head>\n" +
+                "    <body>\n" +
+                "        <h1 th:inline=\"text\">Hello " + security.getUserId() + "!</h1>\n" +
+                "        <form action=\"/logout\" method=\"post\">\n" +
+                "            <input type=\"submit\" value=\"Sign Out\"/>\n" +
+                "        </form>\n" +
+                "    </body>\n" +
+                "</html>";
+    }
+
     @GetMapping("/{projectName}/preview")
     public @ResponseBody
     String getHtml(@PathVariable("projectName") String projectName) {
@@ -56,5 +70,4 @@ public class MainController {
             setUserId(security.getUserId());
         }});
     }
-
 }

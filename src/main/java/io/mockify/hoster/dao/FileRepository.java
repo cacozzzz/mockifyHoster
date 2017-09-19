@@ -53,7 +53,7 @@ public class FileRepository implements Repository {
                 return null;
             }
         } else {
-            System.err.println("Project directory " + projectDirectoryPath + " doesn't exist.");
+            log.error("Project directory {} doesn't exist.", projectDirectoryPath);
             return null;
         }
 
@@ -62,28 +62,22 @@ public class FileRepository implements Repository {
 
     @Override
     public void save(Project project, String userId) {
+        if (project == null) throw new NullProjectException();
+
         String projectDirectoryPath = getProjectDirectoryPath(project, userId);
+        ObjectMapper objectMapper = new ObjectMapper();
+        File projectDirs = new File(projectDirectoryPath);
+        projectDirs.mkdirs();
+        File projectFile = new File(projectDirectoryPath, Constants.PROJECT_FILENAME);
 
-        if (project != null){
-
-            ObjectMapper objectMapper = new ObjectMapper();
-
-            File file = new File(projectDirectoryPath);
-            file.mkdirs();
-
-            file = new File(projectDirectoryPath, Constants.PROJECT_FILENAME);
-            try {
-
-                file.createNewFile();
-                objectMapper.writeValue(file, project);
-
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
+        try {
+            projectFile.createNewFile();
+            objectMapper.writeValue(projectFile, project);
+        } catch (IOException e) {
+            log.error("Couldn't save project",e);
 
         }
     }
-
 
     @Override
     public void saveHtml(String html , Project project, String userId){
@@ -97,13 +91,13 @@ public class FileRepository implements Repository {
         try {
             file.createNewFile();
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Couldn't create html file",e);
         }
 
         try(FileWriter fileWriter = new FileWriter(file)) {
             fileWriter.write(html);
         } catch (IOException e) {
-            e.printStackTrace();
+            log.error("Couldn't write html data into file while saving",e);
         }
     }
 
@@ -118,5 +112,13 @@ public class FileRepository implements Repository {
     private String getProjectDirectoryPathByProjectName(String projectName, String userId){
         return Paths.get(fileRepositoryBaseDir, Constants.PROJECTS_DIRECTORY, userId, projectName).toString();
     }
+
+    class NullProjectException extends RuntimeException {
+        @Override
+        public String getMessage() {
+            return "Project object have to be not null!";
+        }
+    }
+
 
 }

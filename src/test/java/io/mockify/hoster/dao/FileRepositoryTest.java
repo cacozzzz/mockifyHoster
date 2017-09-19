@@ -17,6 +17,7 @@ import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 import static org.junit.Assert.assertTrue;
 
 public class FileRepositoryTest {
@@ -80,6 +81,11 @@ public class FileRepositoryTest {
         saveTestProject();
 
         assertEquals(getTestProject(), fileRepository.load("TestProject", user.getId()));
+    }
+
+    @Test
+    public void load_notExistingProjectDirectory() {
+        assertNull(fileRepository.load("NotExistingProjectName", "user"));
     }
 
     @Test
