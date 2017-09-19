@@ -1,13 +1,10 @@
 package io.mockify.hoster.webapplication;
 
+import io.mockify.hoster.dao.Repository;
+import io.mockify.hoster.model.Project;
 import io.mockify.hoster.usecase.LoadProjectUseCase;
 import io.mockify.hoster.usecase.ProjectCompilerUseCase;
-import io.mockify.hoster.model.Project;
-import io.mockify.hoster.dao.Repository;
 import io.mockify.hoster.usecase.UseCaseRequest;
-import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -73,5 +70,4 @@ public class MainController {
             setUserId(security.getUserId());
         }});
     }
-
 }
