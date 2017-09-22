@@ -25,7 +25,7 @@ public class ProjectCompilerUseCase implements UseCase<Project, String> {
         if(project.getTemplate().getContentTag() == null) return;
 
         Elements contentTag = doc.getElementsByTag(project.getTemplate().getContentTag());
-        if (contentTag.hasText()) {
+        if (!contentTag.isEmpty()) {
             final Element elementContent = contentTag.first();
 
             project.getPostsList().forEach(post -> {
