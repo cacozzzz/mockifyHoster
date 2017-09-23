@@ -16,6 +16,7 @@ import org.springframework.web.client.RestTemplate;
 
 import static com.github.tomakehurst.wiremock.client.WireMock.*;
 import static org.junit.Assert.assertArrayEquals;
+import static org.junit.Assert.assertNull;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -39,9 +40,22 @@ public class RemoteHtmlGatewayTest {
         ResponseEntity<byte[]> testResponseEntity = new ResponseEntity<>(
                 testBytes, HttpStatus.OK
         );
-        when(restTemplateMock.getForEntity(testUtl, byte[].class)).thenReturn(testResponseEntity);
+        mock_getForEntity(testUtl, testResponseEntity);
 
         assertArrayEquals(testBytes, remoteHtmlGateway.get(testUtl));
+    }
+
+    @Test
+    public void get_Open_responseNotOk() throws Exception {
+        String testUtl = "http://test.com";
+        byte[] testBytes = testHtml.getBytes("UTF-8");
+
+        ResponseEntity<byte[]> testResponseEntity = new ResponseEntity<>(
+                testBytes, HttpStatus.NOT_FOUND
+        );
+        mock_getForEntity(testUtl, testResponseEntity);
+
+        assertNull(remoteHtmlGateway.get(testUtl));
     }
 
     @Test
@@ -60,4 +74,8 @@ public class RemoteHtmlGatewayTest {
         assertArrayEquals(expected, actual);
     }
 
+
+    private void mock_getForEntity(String testUtl, ResponseEntity<byte[]> testResponseEntity) {
+        when(restTemplateMock.getForEntity(testUtl, byte[].class)).thenReturn(testResponseEntity);
+    }
 }
