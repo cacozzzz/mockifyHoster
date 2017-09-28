@@ -118,12 +118,4 @@ public class FileRepository implements Repository {
         return Paths.get(fileRepositoryBaseDir, Constants.PROJECTS_DIRECTORY, userId, projectName).toString();
     }
 
-    class NullProjectException extends RuntimeException {
-        @Override
-        public String getMessage() {
-            return "Project object have to be not null!";
-        }
-    }
-
-
 }
