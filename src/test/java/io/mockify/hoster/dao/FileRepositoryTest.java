@@ -1,5 +1,6 @@
 package io.mockify.hoster.dao;
 
+import io.mockify.hoster.exceptions.persistence.NullProjectRepositoryException;
 import io.mockify.hoster.model.Post;
 import io.mockify.hoster.model.Project;
 import io.mockify.hoster.model.Template;
@@ -8,6 +9,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -16,9 +18,8 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.Assert.*;
 
 public class FileRepositoryTest {
 
@@ -108,6 +109,11 @@ public class FileRepositoryTest {
             e.printStackTrace();
             assertTrue(false);
         }
+    }
+
+    @Test(expected = NullProjectRepositoryException.class)
+    public void save_expectPersistenceNullProjectException() throws Exception {
+        fileRepository.save(null,"test@test.com");
     }
 
     @Test

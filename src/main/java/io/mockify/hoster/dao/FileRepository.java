@@ -2,6 +2,7 @@ package io.mockify.hoster.dao;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.mockify.hoster.constants.Constants;
+import io.mockify.hoster.exceptions.persistence.NullProjectRepositoryException;
 import io.mockify.hoster.model.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -61,8 +62,12 @@ public class FileRepository implements Repository {
     }
 
     @Override
-    public void save(Project project, String userId) {
-        if (project == null) throw new NullProjectException();
+    public void save(Project project, String userId) throws NullProjectRepositoryException {
+        if (project == null) {
+            RuntimeException e = new NullProjectRepositoryException("Can't save: Project is null!");
+            log.error(e.getMessage(),e);
+            throw e;
+        }
 
         String projectDirectoryPath = getProjectDirectoryPath(project, userId);
         ObjectMapper objectMapper = new ObjectMapper();
