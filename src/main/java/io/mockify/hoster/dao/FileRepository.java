@@ -1,29 +1,32 @@
 package io.mockify.hoster.dao;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.google.common.primitives.Longs;
 import io.mockify.hoster.constants.Constants;
 import io.mockify.hoster.exceptions.persistence.NullProjectRepositoryException;
 import io.mockify.hoster.model.Project;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Paths;
+import java.util.ArrayList;
+import java.util.List;
 
 public class FileRepository implements Repository {
 
     private static final Logger log = LoggerFactory.getLogger(FileRepository.class);
 
     private String fileRepositoryBaseDir;
-
+    private Sequence sequence;
     /**
      * Main constructor
      * @param fileRepositoryBaseDir Base dir where files are stored
      */
     public FileRepository(String fileRepositoryBaseDir) {
         this.fileRepositoryBaseDir = fileRepositoryBaseDir;
+        sequence = new Sequence();
     }
 
     @Override
@@ -62,12 +65,32 @@ public class FileRepository implements Repository {
     }
 
     @Override
+    public List<Project> loadAllByUserId(String userId) {
+        File userDirectory = new File(getUserDirectory(userId));
+
+        if(!userDirectory.exists() || !userDirectory.isDirectory()) return null;
+
+        String[] dirContents = userDirectory.list();
+
+        List<Project> projects = new ArrayList<>();
+        for (String s : dirContents) {
+            if (Files.isDirectory(Paths.get(userDirectory.toString(), s))) {
+                projects.add(load(s, userId));
+            }
+        }
+
+        return projects;
+    }
+
+    @Override
     public void save(Project project, String userId) throws NullProjectRepositoryException {
         if (project == null) {
             RuntimeException e = new NullProjectRepositoryException("Can't save: Project is null!");
             log.error(e.getMessage(),e);
             throw e;
         }
+
+        project.setId(sequence.getNewId());
 
         String projectDirectoryPath = getProjectDirectoryPath(project, userId);
         ObjectMapper objectMapper = new ObjectMapper();
@@ -81,6 +104,71 @@ public class FileRepository implements Repository {
         } catch (IOException e) {
             log.error("Couldn't save project",e);
 
+        }
+    }
+
+    private class Sequence {
+        private final String sequenceFileName = "sequence.txt";
+        private final File sequenceFile;
+        private long currentId;
+        private int maxId;
+        private int idReserveOffest = 10;
+
+        public Sequence() {
+            sequenceFile = new File(Paths.get(fileRepositoryBaseDir).toString(), sequenceFileName);
+
+
+        }
+
+        public synchronized long getNewId() {
+            if (maxId > currentId) {
+                return ++currentId;
+            }
+
+            currentId = getNewIdFromSeqFile(idReserveOffest);
+            maxId += idReserveOffest;
+            return currentId;
+        }
+
+        private long getNewIdFromSeqFile(long idsToReserve){
+            if(!sequenceFile.exists()) try {
+                sequenceFile.createNewFile();
+                saveNewIdToSeqFile(idsToReserve);
+                return 0;
+            } catch (IOException e) {
+                log.error("Can't create sequence file!",e);
+            }
+
+            return getIdFromSeqFile();
+        }
+
+        private long getIdFromSeqFile() {
+            long maxId = 0;
+            try {
+                byte[] b = new byte[Long.BYTES];
+                FileInputStream sequenceFileInputStream = new FileInputStream(sequenceFile);
+                sequenceFileInputStream.read(b);
+
+                maxId = Longs.fromByteArray(b);
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+
+            return maxId;
+        }
+
+        private void saveNewIdToSeqFile(long id) throws IOException {
+            try {
+                FileOutputStream sequenceOutputStream = new FileOutputStream(sequenceFile);
+                sequenceOutputStream.write(Longs.toByteArray(id));
+                sequenceOutputStream.close();
+            } catch (IOException e) {
+                String msg = "Can't write to sequence file";
+                log.error(msg);
+                throw e;
+            }
         }
     }
 
@@ -116,6 +204,10 @@ public class FileRepository implements Repository {
 
     private String getProjectDirectoryPathByProjectName(String projectName, String userId){
         return Paths.get(fileRepositoryBaseDir, Constants.PROJECTS_DIRECTORY, userId, projectName).toString();
+    }
+
+    private String getUserDirectory(String userId) {
+        return Paths.get(fileRepositoryBaseDir, Constants.PROJECTS_DIRECTORY, userId).toString();
     }
 
 }

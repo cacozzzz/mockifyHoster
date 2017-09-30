@@ -22,11 +22,11 @@ import java.util.List;
 import static org.junit.Assert.*;
 
 public class FileRepositoryTest {
-
     @Rule
     public final TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     private String testProjectFileData;// = "{\"id\":0,\"name\":\"TestProject\",\"template\":{\"id\":0,\"name\":\"template1\",\"contentTag\":\"content-tag\",\"resourceList\":null,\"htmldata\":\"<html><head></head><body><content-tag/></div></body></html>\"},\"postsList\":[{\"id\":0,\"name\":\"Post1\",\"postDate\":null,\"htmlData\":\"<P>post1</P>\",\"url\":null}]}";
+
     private String testProjectsDataFolder = "ProjectsData";
     private String testProjectFolder = "TestProject";
     private String testProjectFileName = "Project.json";
@@ -34,10 +34,9 @@ public class FileRepositoryTest {
     private final String testProjectHtmlFileName = "index.html";
     private String testProjectHtmlFileData;
 
-
     private FileRepository fileRepository;
-    private User user;
 
+    private User user;
     @Before
     public void setUp(){
         fileRepository = new FileRepository(getTempDirectory());
@@ -82,6 +81,16 @@ public class FileRepositoryTest {
         saveTestProject();
 
         assertEquals(getTestProject(), fileRepository.load("TestProject", user.getId()));
+    }
+
+    @Test
+    public void loadAllByUserId() throws Exception {
+        saveTestProject();
+
+        List<Project> projects = fileRepository.loadAllByUserId(user.getId());
+
+        assertEquals(1, projects.size());
+        assertEquals(getTestProject(), projects.get(0));
     }
 
     @Test
