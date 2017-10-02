@@ -1,0 +1,14 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<!--/*@thymesVar id="userId" type="java.lang.String"*/-->
+<head>
+</head>
+<body th:fragment="userBar">
+
+<nav class="navbar navbar-dark bg-dark">
+    <span class="navbar-brand" th:text="${userId}"></span>
+    <form action="/api/logout">
+        <button class="btn btn-sm btn-outline-danger" type="submit" value="logout">logout</button>
+    </form>
+</nav>
+</body>
+</html>

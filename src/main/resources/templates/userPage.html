@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!--/*@thymesVar id="userId" type="java.lang.String"*/-->
+<!--/*@thymesVar id="projects" type="java.util.List"*/-->
+<!--/*@thymesVar id="project" type="io.mockify.hoster.view.ProjectViewModel"*/-->
+<head>
+    <title>Title</title>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+    <link type="text/css" rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta/css/bootstrap.min.css" integrity="sha384-/Y6pD6FV/Vv2HJnA6t+vslU6fwYXjCFtcEpHbNJ0lyAFsXTsjBbfaDjzALeQsN6M" crossorigin="anonymous" />
+</head>
+<body>
+<nav th:if="${userId} != null" th:replace="fragments/userBar :: userBar"/>
+<div class="content">
+    <div class="card-group">
+        <div th:each="project : ${projects}" class="card" style="width: 20rem;">
+            <div class="card-body">
+                <h4 th:text="${project.projectName}" th:href="@{${project.projectName}+'/   '}" class="card-title"></h4>
+                <h6 class="card-subtitle mb-2 text-muted">Description</h6>
+                <p th:text="'Posts : '+${project.postCount}" class="card-text"></p>
+
+                <a th:href="'/'+${project.projectName}" class="btn btn-primary">Open</a>
+                <a th:href="'/api/'+${project.projectName}+'/preview'" class="btn btn-secondary">Preview</a>
+            </div>
+        </div>
+    </div>
+</div>
+</body>
+</html>

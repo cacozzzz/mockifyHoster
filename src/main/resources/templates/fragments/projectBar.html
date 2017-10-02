@@ -1,0 +1,13 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<!--/*@thymesVar id="project" type="io.mockify.hoster.view.ProjectViewModel"*/-->
+<head>
+</head>
+<body th:fragment="projectBar">
+<nav class="navbar navbar-ligth bg-light justify-content-start">
+    <a th:href="'/api/'+${project.projectName}+'/preview'"
+       class="btn btn-sm btn-primary">Preview</a>
+    <span class="navbar-brand ml-2" th:text="'Project : '+${project.projectName}"></span>
+</nav>
+</body>
+</html>
