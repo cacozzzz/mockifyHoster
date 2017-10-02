@@ -5,17 +5,27 @@ import io.mockify.hoster.model.Project;
 import io.mockify.hoster.usecase.LoadProjectUseCase;
 import io.mockify.hoster.usecase.ProjectCompilerUseCase;
 import io.mockify.hoster.usecase.UseCaseRequest;
+import io.mockify.hoster.view.ProjectViewModelBuilder;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping("/api")
 public class MainController {
 
     private final Repository repository;
+
+    private final ProjectViewModelBuilder projectViewModelBuilder;
 
     private final ProjectCompilerUseCase projectCompilerUseCase;
 
@@ -24,35 +34,23 @@ public class MainController {
     private final Security security;
 
     public MainController(Repository repository,
+                          ProjectViewModelBuilder projectViewModelBuilder,
                           ProjectCompilerUseCase projectCompilerUseCase,
                           LoadProjectUseCase loadProjectUseCase, Security security) {
         this.repository = repository;
+        this.projectViewModelBuilder = projectViewModelBuilder;
         this.projectCompilerUseCase = projectCompilerUseCase;
         this.loadProjectUseCase = loadProjectUseCase;
         this.security = security;
     }
 
     @GetMapping
-    public @ResponseBody String getHelloPage(){
-        return "<h1>Hello Page</h1>";
+    public String getHelloPage(Model model){
+        model.addAttribute("name", "app");
+        return "getHelloPage";//"<h1>Hello Page</h1>";
     }
 
-    @GetMapping("/logoutPage")
-    public @ResponseBody String logout() {
-        return "<!DOCTYPE html>\n" +
-                "<html xmlns=\"http://www.w3.org/1999/xhtml\" xmlns:th=\"http://www.thymeleaf.org\"\n" +
-                "      xmlns:sec=\"http://www.thymeleaf.org/thymeleaf-extras-springsecurity3\">\n" +
-                "    <head>\n" +
-                "        <title>Hello World!</title>\n" +
-                "    </head>\n" +
-                "    <body>\n" +
-                "        <h1 th:inline=\"text\">Hello " + security.getUserId() + "!</h1>\n" +
-                "        <form action=\"/logout\" method=\"post\">\n" +
-                "            <input type=\"submit\" value=\"Sign Out\"/>\n" +
-                "        </form>\n" +
-                "    </body>\n" +
-                "</html>";
-    }
+
 
     @GetMapping("/{projectName}/preview")
     public @ResponseBody
@@ -69,5 +67,14 @@ public class MainController {
             setProjectName(projectName);
             setUserId(security.getUserId());
         }});
+    }
+
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+        return "redirect:/api/";
     }
 }

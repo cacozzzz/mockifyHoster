@@ -23,7 +23,17 @@ public class MainControllerTest {
     @Test
     public void getHelloPage() throws Exception {
         assertThat(testRestTemplate.getForObject(String.format("http://localhost:%d/api", port),
-                String.class)).contains("<h1>Hello Page</h1>");
+                String.class)).contains("<!DOCTYPE HTML>\n" +
+                "\n" +
+                "<html>\n" +
+                "<head>\n" +
+                "    <title>Getting Started: Serving Web Content</title>\n" +
+                "    <meta http-equiv=\"Content-Type\" content=\"text/html; charset=UTF-8\" />\n" +
+                "</head>\n" +
+                "<body>\n" +
+                "<p>Hello, app!</p>\n" +
+                "</body>\n" +
+                "</html>");
     }
 
 }
