@@ -5,7 +5,7 @@ import java.util.List;
 
 public class Project {
 
-    private int id;
+    private long id;
     private String name;
     private Template template;
     private List<Post> postsList = new ArrayList<>();
@@ -18,11 +18,11 @@ public class Project {
     public Project() {
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 
@@ -94,8 +94,8 @@ public class Project {
 
     @Override
     public int hashCode() {
-        int result = id;
-        result = 31 * result + (name != null ? name.hashCode() : 0);
+        int result = (int) (id ^ (id >>> 32));
+        result = 31 * result + name.hashCode();
         result = 31 * result + (template != null ? template.hashCode() : 0);
         result = 31 * result + (postsList != null ? postsList.hashCode() : 0);
         result = 31 * result + (resourceList != null ? resourceList.hashCode() : 0);

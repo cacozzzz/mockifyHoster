@@ -1,5 +1,6 @@
 package io.mockify.hoster.dao;
 
+import io.mockify.hoster.exceptions.persistence.NullProjectRepositoryException;
 import io.mockify.hoster.model.Post;
 import io.mockify.hoster.model.Project;
 import io.mockify.hoster.model.Template;
@@ -8,6 +9,7 @@ import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.rules.TemporaryFolder;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -16,15 +18,15 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+
+import static org.junit.Assert.*;
 
 public class FileRepositoryTest {
-
     @Rule
     public final TemporaryFolder temporaryFolder = new TemporaryFolder();
 
     private String testProjectFileData;// = "{\"id\":0,\"name\":\"TestProject\",\"template\":{\"id\":0,\"name\":\"template1\",\"contentTag\":\"content-tag\",\"resourceList\":null,\"htmldata\":\"<html><head></head><body><content-tag/></div></body></html>\"},\"postsList\":[{\"id\":0,\"name\":\"Post1\",\"postDate\":null,\"htmlData\":\"<P>post1</P>\",\"url\":null}]}";
+
     private String testProjectsDataFolder = "ProjectsData";
     private String testProjectFolder = "TestProject";
     private String testProjectFileName = "Project.json";
@@ -32,10 +34,9 @@ public class FileRepositoryTest {
     private final String testProjectHtmlFileName = "index.html";
     private String testProjectHtmlFileData;
 
-
     private FileRepository fileRepository;
-    private User user;
 
+    private User user;
     @Before
     public void setUp(){
         fileRepository = new FileRepository(getTempDirectory());
@@ -83,6 +84,21 @@ public class FileRepositoryTest {
     }
 
     @Test
+    public void loadAllByUserId() throws Exception {
+        saveTestProject();
+
+        List<Project> projects = fileRepository.loadAllByUserId(user.getId());
+
+        assertEquals(1, projects.size());
+        assertEquals(getTestProject(), projects.get(0));
+    }
+
+    @Test
+    public void load_notExistingProjectDirectory() {
+        assertNull(fileRepository.load("NotExistingProjectName", "user"));
+    }
+
+    @Test
     public void save() {
         fileRepository = new FileRepository(getTempDirectory());
         Project testProject = getTestProject();
@@ -102,6 +118,11 @@ public class FileRepositoryTest {
             e.printStackTrace();
             assertTrue(false);
         }
+    }
+
+    @Test(expected = NullProjectRepositoryException.class)
+    public void save_expectPersistenceNullProjectException() throws Exception {
+        fileRepository.save(null,"test@test.com");
     }
 
     @Test

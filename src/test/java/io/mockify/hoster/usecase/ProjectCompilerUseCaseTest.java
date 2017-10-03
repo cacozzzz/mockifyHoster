@@ -47,7 +47,7 @@ public class ProjectCompilerUseCaseTest {
     @Test
     public void getCompiledHtml() {
         Project project = getProject();
-        assertEquals(projectCompilerUseCase.execute(project), testHtmlFileData);
+        assertEquals(testHtmlFileData, projectCompilerUseCase.execute(project));
     }
 
     @Test

@@ -1,29 +1,30 @@
 package io.mockify.hoster.webapplication;
 
+import io.mockify.hoster.dao.Repository;
+import io.mockify.hoster.model.Project;
 import io.mockify.hoster.usecase.LoadProjectUseCase;
 import io.mockify.hoster.usecase.ProjectCompilerUseCase;
-import io.mockify.hoster.model.Project;
-import io.mockify.hoster.dao.Repository;
 import io.mockify.hoster.usecase.UseCaseRequest;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.User;
+import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
 import org.springframework.stereotype.Controller;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 @Controller
 @RequestMapping("/api")
 public class MainController {
 
     private final Repository repository;
-
     private final ProjectCompilerUseCase projectCompilerUseCase;
-
     private final LoadProjectUseCase loadProjectUseCase;
-
     private final Security security;
 
     public MainController(Repository repository,
@@ -36,9 +37,12 @@ public class MainController {
     }
 
     @GetMapping
-    public @ResponseBody String getHelloPage(){
-        return "<h1>Hello Page</h1>";
+    public String getHelloPage(Model model){
+        model.addAttribute("name", "app");
+        return "getHelloPage";//"<h1>Hello Page</h1>";
     }
+
+
 
     @GetMapping("/{projectName}/preview")
     public @ResponseBody
@@ -57,4 +61,12 @@ public class MainController {
         }});
     }
 
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request, HttpServletResponse response) {
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
+        if (auth != null) {
+            new SecurityContextLogoutHandler().logout(request, response, auth);
+        }
+        return "redirect:/api/";
+    }
 }

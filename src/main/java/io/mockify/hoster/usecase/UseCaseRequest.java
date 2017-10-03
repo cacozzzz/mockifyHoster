@@ -5,12 +5,10 @@ import io.mockify.hoster.model.Project;
 public class UseCaseRequest {
 
     private Project project;
-
     private String userId;
-
     private String html;
-
     private String projectName;
+    private String remoteTemplateUrl;
 
     public Project getProject() {
         return project;
@@ -42,5 +40,13 @@ public class UseCaseRequest {
 
     public void setProjectName(String projectName) {
         this.projectName = projectName;
+    }
+
+    public String getRemoteTemplateUrl() {
+        return remoteTemplateUrl;
+    }
+
+    public void setRemoteTemplateUrl(String remoteTemplateUrl) {
+        this.remoteTemplateUrl = remoteTemplateUrl;
     }
 }

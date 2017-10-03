@@ -1,0 +1,10 @@
+version: "3"
+services:
+  web:
+    # replace username/repo:tag with your name and image details
+    image: mockifyhoster
+    container_name: mockify
+    build:
+        context: .
+    ports:
+     - "80:8080"

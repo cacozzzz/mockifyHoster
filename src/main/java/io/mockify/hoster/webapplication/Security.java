@@ -11,17 +11,17 @@ import org.springframework.security.core.userdetails.User;
 
 @Configuration
 public class Security extends WebSecurityConfigurerAdapter {
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
-        super.configure(http);
-
         http
                 .authorizeRequests()
-                    .antMatchers("/api").permitAll()
-                    .antMatchers("/api/**").authenticated()
+                    .antMatchers("**").authenticated()
+                    .antMatchers("/components/**").permitAll()
                     .and()
-                .logout()
-                    .logoutUrl("/logout")
+                .formLogin()
+                .and()
+                .httpBasic()
         ;
     }
 
