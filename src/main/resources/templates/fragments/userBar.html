@@ -5,7 +5,9 @@
 <body th:fragment="userBar">
 
 <nav class="navbar navbar-dark bg-dark">
-    <span class="navbar-brand" th:text="${userId}"></span>
+    <a href="/">
+        <span class="navbar-brand" th:text="${userId}"></span>
+    </a>
     <form action="/api/logout">
         <button class="btn btn-sm btn-outline-danger" type="submit" value="logout">logout</button>
     </form>

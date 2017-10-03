@@ -1,9 +1,9 @@
 package io.mockify.hoster.webapplication;
 
+import io.mockify.hoster.converters.ProjectPresentableConverter;
 import io.mockify.hoster.dao.Repository;
 import io.mockify.hoster.model.Project;
-import io.mockify.hoster.view.ProjectViewModel;
-import io.mockify.hoster.view.ProjectViewModelBuilder;
+import io.mockify.hoster.view.ProjectPresentable;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -17,12 +17,12 @@ public class ViewController {
 
     private Security security;
     private Repository repository;
-    private ProjectViewModelBuilder projectViewModelBuilder;
+    private ProjectPresentableConverter projectPresentableConverter;
 
-    public ViewController(Security security, Repository repository, ProjectViewModelBuilder projectViewModelBuilder) {
+    public ViewController(Security security, Repository repository, ProjectPresentableConverter projectPresentableConverter) {
         this.security = security;
         this.repository = repository;
-        this.projectViewModelBuilder = projectViewModelBuilder;
+        this.projectPresentableConverter = projectPresentableConverter;
     }
 
     @GetMapping("/")
@@ -30,21 +30,21 @@ public class ViewController {
 
         String userId = security.getUserId();
         List<Project> projects = repository.loadAllByUserId(userId);
-        List<ProjectViewModel> projectViewModels = new ArrayList<>();
-        projects.forEach(p -> projectViewModels.add(projectViewModelBuilder.build(p)));
+        List<ProjectPresentable> projectPresentables = new ArrayList<>();
+        projects.forEach(p -> projectPresentables.add(projectPresentableConverter.convertForth(p)));
         model.addAttribute("userId", userId);
-        model.addAttribute("projects", projectViewModels);
+        model.addAttribute("projects", projectPresentables);
 
         return "userPage";
     }
 
-    @GetMapping("/{projectName}")
+    @GetMapping("/{projectName}/")
     public String projectPage(@PathVariable("projectName") String projectName, Model model) {
         String userId = security.getUserId();
         Project project = repository.load(projectName, userId);
 
         model.addAttribute("userId", userId);
-        model.addAttribute("project", projectViewModelBuilder.build(project));
+        model.addAttribute("project", projectPresentableConverter.convertForth(project));
 
         return "projectPage";
     }

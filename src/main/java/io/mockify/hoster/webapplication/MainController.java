@@ -5,7 +5,6 @@ import io.mockify.hoster.model.Project;
 import io.mockify.hoster.usecase.LoadProjectUseCase;
 import io.mockify.hoster.usecase.ProjectCompilerUseCase;
 import io.mockify.hoster.usecase.UseCaseRequest;
-import io.mockify.hoster.view.ProjectViewModelBuilder;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.authentication.logout.SecurityContextLogoutHandler;
@@ -24,21 +23,14 @@ import javax.servlet.http.HttpServletResponse;
 public class MainController {
 
     private final Repository repository;
-
-    private final ProjectViewModelBuilder projectViewModelBuilder;
-
     private final ProjectCompilerUseCase projectCompilerUseCase;
-
     private final LoadProjectUseCase loadProjectUseCase;
-
     private final Security security;
 
     public MainController(Repository repository,
-                          ProjectViewModelBuilder projectViewModelBuilder,
                           ProjectCompilerUseCase projectCompilerUseCase,
                           LoadProjectUseCase loadProjectUseCase, Security security) {
         this.repository = repository;
-        this.projectViewModelBuilder = projectViewModelBuilder;
         this.projectCompilerUseCase = projectCompilerUseCase;
         this.loadProjectUseCase = loadProjectUseCase;
         this.security = security;
